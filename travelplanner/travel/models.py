@@ -8,6 +8,7 @@ class Trip(models.Model):
     end_date = models.DateField()
 
 class Activity(models.Model):
+    trip = models.ForeignKey(Trip, on_delete = models.CASCADE, null=True)
     name = models.CharField(max_length = 100)
     start_time = models.TimeField()
     end_time = models.TimeField()
