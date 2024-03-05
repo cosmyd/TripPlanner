@@ -1,0 +1,5 @@
+{% extends "travel/base.html" %}
+{% block content %}
+<h1>Hello {{ user }}</h1>
+<a href="{% url 'create-trip' %}">Create trip</a>
+{% endblock content %}
