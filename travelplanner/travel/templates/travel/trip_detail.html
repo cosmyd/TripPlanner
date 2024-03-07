@@ -7,4 +7,13 @@
 <a href="{% url 'add-activity' trip.pk %}">add-activity</a>
 <a href="{% url 'update-trip-details' trip.pk %}">update trip</a>
 <a href="{% url 'delete-trip' trip.pk %}">delete trip</a>
+<a href="{% url 'manage-trip-users' trip.pk %}">manage-trip-users</a>
+{% for activity in activities %}
+<br>
+<a href="{% url 'activity-detail' activity.pk %}">{{activity.name}}</a>
+
+{% endfor %}
+{% for user in object.users.all %}
+<p>{{ user.username }}</p>
+{% endfor %}
 {% endblock content %}

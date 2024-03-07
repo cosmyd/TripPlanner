@@ -1,0 +1,10 @@
+{% extends "travel/base.html" %}
+{% block content %}
+
+{{ object.name }}
+{{object.start_time}}
+{{object.end_time}}
+<a href="{% url 'delete-activity' object.pk %}">delete activity</a>
+<a href="{% url 'activity-update' object.pk %}">edit activity</a>
+
+{% endblock content %}
