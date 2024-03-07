@@ -23,8 +23,10 @@ def home(request):
 def dashboard(request):
     user = request.user
     trips = Trip.objects.filter(admin = user)
+    trips2 = Trip.objects.filter(users = user)
     context = {
         'trips': trips,
+        'trips2':trips2
     }
     return render(request, 'travel/dashboard.html', context)
 
@@ -101,7 +103,8 @@ def trip_users(request, trip_pk):
 def add_activity(request, trip_pk):
     trip = get_object_or_404(Trip, pk = trip_pk)
     user = request.user
-    if trip.admin != user:
+    trip_users = trip.users.all()
+    if trip.admin != user and user not in trip_users:
         return HttpResponse('You are trying to modify another user\'s trip ')
     if request.method == 'POST':
         form = ActivityModelForm(request.POST)

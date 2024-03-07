@@ -5,4 +5,8 @@
 <a href="{% url 'trip-detail' trip.id %}">{{trip.name}}</a>
 
 {% endfor %}
+{% for trip in trips2 %}
+<a href="{% url 'trip-detail' trip.id %}">{{trip.name}}</a>
+
+{% endfor %}
 {% endblock content %}
