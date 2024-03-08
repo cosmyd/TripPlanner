@@ -9,4 +9,6 @@
 <a href="{% url 'trip-detail' trip.id %}">{{trip.name}}</a>
 
 {% endfor %}
+
+<a href="{% url 'send-friend-request' %}">send friend request</a>
 {% endblock content %}

@@ -1,7 +1,7 @@
 from django import forms
 from .models import Trip, Activity
 from django.contrib.auth.models import User
-from .import models
+from . import models
 
 class TripModelForm(forms.ModelForm):
     class Meta:

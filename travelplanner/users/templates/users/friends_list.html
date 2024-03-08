@@ -1,0 +1,11 @@
+{% extends "travel/base.html" %}
+
+{% block content %}
+{% for list in friends_list %}
+{% for friend in list.friends.all %}
+{{friend.username}}
+
+{% endfor %}
+{% endfor %}
+
+{% endblock content %}
