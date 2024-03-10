@@ -2,6 +2,7 @@ from django import forms
 from .models import Trip, Activity
 from django.contrib.auth.models import User
 from . import models
+from users.models import FriendshipList
 
 class TripModelForm(forms.ModelForm):
     class Meta:
@@ -23,12 +24,18 @@ class ActivityModelForm(forms.ModelForm):
         }
 
 class TripUsersModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        trip_admin = kwargs.pop('trip_admin')
+        super(TripUsersModelForm, self).__init__(*args, **kwargs)
+        self.fields['users'].queryset = FriendshipList.objects.get(owner=trip_admin).friends.all()
+        return 
+
     class Meta:
         model = Trip
         fields = ['users']
         
     users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
+        queryset=FriendshipList.objects.none(),
         widget=forms.CheckboxSelectMultiple
     )
         

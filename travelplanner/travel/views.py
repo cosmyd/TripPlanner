@@ -84,7 +84,7 @@ def trip_users(request, trip_pk):
     if trip.admin != user:
         return HttpResponse('You are trying to modify another user\'s trip ')
     if request.method == 'POST':
-        form = TripUsersModelForm(request.POST)
+        form = TripUsersModelForm(request.POST, trip_admin = trip.admin)
         ### TODO prepopulate the trip users many to many field
 
         if form.is_valid():
@@ -95,7 +95,7 @@ def trip_users(request, trip_pk):
             trip = trip.save()
             return redirect('trip-detail', pk = trip_pk)
     else:
-        form = TripUsersModelForm()
+        form = TripUsersModelForm(trip_admin = trip.admin)
 
     return render(request, 'travel/trip_users_form.html', {'form': form, 'trip': trip})
 

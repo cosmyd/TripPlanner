@@ -1,0 +1,10 @@
+{% extends "travel/base.html" %}
+
+{% block content %}
+{% for friend_request in friend_requests %}
+{{friend_request.from_user.username}}
+<a href="{% url 'accept-friend-request' friend_request.pk %}">accept</a>
+<br>
+{% endfor %}
+
+{% endblock content %}

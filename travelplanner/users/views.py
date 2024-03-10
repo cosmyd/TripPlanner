@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserRegisterForm, FriendRequestForm
 from django.contrib.auth.decorators import login_required
-from .models import FriendshipList
+from .models import FriendshipList, FriendRequest
 
 
 # Create your views here.
@@ -39,6 +39,28 @@ def send_friend_request(request):
         form = FriendRequestForm()
     return render(request, 'users/send_friend_request.html',{'form': form})        
 
+@login_required
+def friend_requests(request):
+    user = request.user
+    friend_requests = FriendRequest.objects.filter(to_user = user)
+    context = {
+        'friend_requests': friend_requests
+    }
+    return render(request, 'users/friend_requests.html', context)    
+
+@login_required
+def friend_request_accept(request, fr_pk):
+    friend_request = get_object_or_404(FriendRequest, pk=fr_pk)
+    from_user = friend_request.from_user
+    to_user = friend_request.to_user
+    if to_user == request.user:
+        FriendshipList.objects.get(owner = request.user).friends.add(from_user)
+        FriendshipList.objects.get(owner = from_user).friends.add(request.user)
+        friend_request.delete()
+    return redirect('friend-requests')
+
+
+    
 
 
 
