@@ -1,6 +1,9 @@
 {% extends "travel/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
 <div class="content-section">
     <form method="POST">
         {% csrf_token %}

@@ -14,6 +14,9 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
+from users.models import FriendRequest
+
 
 def home(request):
     user = request.user
@@ -22,11 +25,12 @@ def home(request):
 @login_required
 def dashboard(request):
     user = request.user
-    trips = Trip.objects.filter(admin = user)
-    trips2 = Trip.objects.filter(users = user)
+    trips = Trip.objects.filter(Q(admin = user) | Q(users = user ))
+    friend_requests = FriendRequest.objects.filter(to_user = user)
+
     context = {
         'trips': trips,
-        'trips2':trips2
+        'friend_requests' : friend_requests
     }
     return render(request, 'travel/dashboard.html', context)
 
@@ -108,17 +112,18 @@ def add_activity(request, trip_pk):
         return HttpResponse('You are trying to modify another user\'s trip ')
     if request.method == 'POST':
         form = ActivityModelForm(request.POST)
-        if form.is_valid():
-            
+        if form.is_valid():   
             activity = form.save(commit=False)
             activities = Activity.objects.filter(trip = trip)
-            ok = True
-            ### TODO wrong algorithm here
+            ok = True           
             for activity_it in activities:
                 if activity.start_time < activity_it.end_time and activity.start_time > activity_it.start_time:
                     ok = False
                     break
-                elif activity.end_time < activity_it.end_time and activity.end_time > activity_it.start_time:
+                if activity.end_time < activity_it.end_time and activity.end_time > activity_it.start_time:
+                    ok = False
+                    break
+                if activity.start_time < activity_it.start_time and activity.end_time > activity_it.end_time:
                     ok = False
                     break
             if ok: 
@@ -144,7 +149,7 @@ class ActivityUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         activity = self.get_object()
         trip = activity.trip
-        if self.request.user == trip.admin:
+        if self.request.user == trip.admin or self.request.user in trip.users.all():
             return True
         else:
             return False
@@ -156,7 +161,7 @@ class ActivityDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         activity = self.get_object()
         trip = activity.trip
-        if self.request.user == trip.admin:
+        if self.request.user == trip.admin or self.request.user in trip.users.all():
             return True
         else:
             return False

@@ -1,16 +1,36 @@
 {% extends "travel/base.html" %}
+
+
 {% block content %}
-<a href="{% url 'create-trip' %}">Create trip</a>
-{% for trip in trips %}
-<a href="{% url 'trip-detail' trip.id %}">{{trip.name}}</a>
+<div class="row">
+  <div class="col-lg">
+    <ul class="list-group">
+        <h2>Upcoming Trips</h2>
+        {% for trip in trips %}
+        <li class="list-group-item">
+            <a href="{% url 'trip-detail' trip.id %}">{{trip.name}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a class="btn btn-primary" href="{% url 'create-trip' %}" role="button">Create trip</a>
+  </div>
+  <div class="col-lg">
+    <ul class="list-group">
+    <h2>Friend Requests</h2>
+    {% for friend_request in friend_requests %}
+    <li class="list-group-item">
+        <a href="{% url 'accept-friend-request' friend_request.pk %}">{{friend_request.from_user}}</a>
+    </li>
+    {% endfor %}
+    </ul>
+    <a class="btn btn-primary" href="{% url 'send-friend-request' %}">send friend request</a>
+    <a class="btn btn-primary" href="{% url 'friend-requests' %}">see friend requests</a>
+  </div>
+</div>
 
-{% endfor %}
-{% for trip in trips2 %}
-<a href="{% url 'trip-detail' trip.id %}">{{trip.name}}</a>
 
-{% endfor %}
 
-<a href="{% url 'send-friend-request' %}">send friend request</a>
-<a href="{% url 'friend-requests' %}">see friend requests</a>
+
+
 
 {% endblock content %}

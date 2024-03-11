@@ -1,19 +1,73 @@
 {% extends "travel/base.html" %}
 {% block content %}
+<div class = "container">
+<h1>{{ object.name }}</h1>
 
-{{ object.name }}
-{{object.start_date}}
-{{object.end_date}}
-<a href="{% url 'add-activity' trip.pk %}">add-activity</a>
-<a href="{% url 'update-trip-details' trip.pk %}">update trip</a>
-<a href="{% url 'delete-trip' trip.pk %}">delete trip</a>
-<a href="{% url 'manage-trip-users' trip.pk %}">manage-trip-users</a>
-{% for activity in activities %}
-<br>
-<a href="{% url 'activity-detail' activity.pk %}">{{activity.name}}</a>
 
-{% endfor %}
-{% for user in object.users.all %}
-<p>{{ user.username }}</p>
-{% endfor %}
+<div id="accordion">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            General Trip Information
+          </button>
+        </h5>
+      </div>
+  
+      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+            {{object.start_date}}
+            {{object.end_date}}        
+        </div>
+        <a class="btn btn-primary" href="{% url 'update-trip-details' trip.pk %}">update trip</a>
+        <a class="btn btn-primary" href="{% url 'delete-trip' trip.pk %}">delete trip</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" id="headingTwo">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Itinerary
+          </button>
+        </h5>
+      </div>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body">
+            {% for activity in activities %}
+            <br>
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="..." alt="Card image cap">
+                <div class="card-body">
+                    <a href="{% url 'activity-detail' activity.pk %}"><h5 class="card-title">{{activity.name}}</h5></a>
+                    <p class="card-text">{{activity.start_time}}</p>
+                    <p class="card-text">{{activity.end_time}}</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+            
+            {% endfor %}   
+            <a class="btn btn-primary" href="{% url 'add-activity' trip.pk %}">add-activity</a>
+     
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" id="headingThree">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            Trip Group
+          </button>
+        </h5>
+      </div>
+      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+        <div class="card-body">
+            {{ object.admin }}
+            {% for user in object.users.all %}
+            <p>{{ user.username }}</p>
+            {% endfor %}      
+            <a class="btn btn-primary" href="{% url 'manage-trip-users' trip.pk %}">manage-trip-users</a>
+  
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}

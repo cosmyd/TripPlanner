@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserRegisterForm, FriendRequestForm
 from django.contrib.auth.decorators import login_required
 from .models import FriendshipList, FriendRequest
+from django.contrib import messages
 
 
 # Create your views here.
@@ -29,12 +30,18 @@ def friends_list(request):
 @login_required
 def send_friend_request(request):
     user = request.user
+    present_friends = FriendshipList.objects.get(owner = user).friends.all()
+    print(present_friends)
     if request.method == 'POST':
         form = FriendRequestForm(request.POST)
         if form.is_valid():
             friend_request = form.save(commit=False)
-            friend_request.from_user = user
-            friend_request = form.save()
+            if friend_request.to_user in present_friends:
+                print('hereeee')
+                messages.add_message(request, messages.ERROR, 'You are already friends with this person')
+            else:
+                friend_request.from_user = user
+                friend_request = form.save()
     else:
         form = FriendRequestForm()
     return render(request, 'users/send_friend_request.html',{'form': form})        

@@ -13,7 +13,7 @@ class Activity(models.Model):
     name = models.CharField(max_length = 100)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    link = models.URLField()
+    link = models.URLField(blank=True)
     
 class TripUsers(models.Model):
     trip = models.ForeignKey(Trip, on_delete = models.CASCADE)
