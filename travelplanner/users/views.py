@@ -10,7 +10,8 @@ def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            FriendshipList.objects.create(owner = user)
             return redirect('home')
         
     else:

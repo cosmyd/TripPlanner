@@ -16,6 +16,17 @@
   </div>
   <div class="col-lg">
     <ul class="list-group">
+        <h2>Current</h2>
+        {% for trip in current_trips %}
+        <li class="list-group-item">
+            <a href="{% url 'trip-detail' trip.id %}">{{trip.name}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a class="btn btn-primary" href="{% url 'create-trip' %}" role="button">Create trip</a>
+  </div>
+  <div class="col-lg">
+    <ul class="list-group">
     <h2>Friend Requests</h2>
     {% for friend_request in friend_requests %}
     <li class="list-group-item">

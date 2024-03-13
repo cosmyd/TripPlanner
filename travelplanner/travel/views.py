@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from users.models import FriendRequest
+import datetime
 
 
 def home(request):
@@ -25,11 +26,14 @@ def home(request):
 @login_required
 def dashboard(request):
     user = request.user
-    trips = Trip.objects.filter(Q(admin = user) | Q(users = user ))
+    now = datetime.datetime.now()
+    upcoming_trips = Trip.objects.filter(Q(start_date__gt = now) & (Q(admin = user) | Q(users = user)))
     friend_requests = FriendRequest.objects.filter(to_user = user)
+    current_trips = Trip.objects.filter(Q(start_date__gt = now) & Q(start_date__lt = now) & Q(end_date__gt = now))
 
     context = {
-        'trips': trips,
+        'trips': upcoming_trips,
+        'current_trips': current_trips,
         'friend_requests' : friend_requests
     }
     return render(request, 'travel/dashboard.html', context)
@@ -40,6 +44,7 @@ class TripCreateView(LoginRequiredMixin, CreateView):
     form_class = TripModelForm
     def form_valid(self, form):
         form.instance.admin = self.request.user
+
         return super().form_valid(form)
     success_url = '/'
     # TODO date validation: end date > start date
